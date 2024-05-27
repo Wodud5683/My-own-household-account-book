@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
+import { useExpenses } from '../context/ExpenseContext';
 
 const MonthContainer = styled.div`
   display: flex;
@@ -10,6 +11,7 @@ const MonthContainer = styled.div`
   border-radius: 20px;
   padding: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
 `;
 
 const MonthButton = styled.button`
@@ -23,7 +25,8 @@ const MonthButton = styled.button`
   font-size: 16px;
 `;
 
-const MonthSelector = ({ selectedMonth, setSelectedMonth }) => {
+const MonthSelector = () => {
+  const { selectedMonth, setSelectedMonth } = useExpenses();
   const months = Array.from({ length: 12 }, (_, i) => `${i + 1}월`);
 
   useEffect(() => {

@@ -1,114 +1,132 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { v4 as uuidv4 } from 'uuid';
+import MonthSelector from './MonthSelector';
+import { useExpenses } from '../context/ExpenseContext';
+
+const Container = styled.div`
+  width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 20px;
+`;
 
 const Form = styled.form`
   display: flex;
+  flex-direction: column;
   gap: 10px;
-  justify-content: center;
-  padding: 25px;
-  background-color: #ffffff;
-  border-radius: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+`;
+
+const InputGroup = styled.div`
+  display: flex;
+  gap: 10px;
+`;
+
+const Label = styled.label`
+  display: flex;
+  flex-direction: column;
+  font-weight: bold;
+  flex: 1;
 `;
 
 const Input = styled.input`
   padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  width: 150px;
-  font-size: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
 `;
 
 const Button = styled.button`
-  padding: 10px; 
-  background-color: #007bff;
+  padding: 10px 20px;
   color: white;
-  border: 1px solid;
+  background-color: #007bff;
+  border: none;
   border-radius: 5px;
-  width: 150px;
   cursor: pointer;
   font-size: 14px;
-  
-  &:hover {
-    background-color: #0056b3;
+
+  &:disabled {
+    background-color: #ccc;
   }
 `;
 
-const Label = styled.label`
-    margin-bottom: 5px;
-    font-size: 14px;
-    color: rgb(51, 51, 51);
-    text-align: left;
-    height: 15px;
-`;
-
-const ExpenseForm = ({ addExpense }) => {
-  const [date, setDate] = useState('');
+const ExpenseForm = () => {
+  const { selectedMonth, expenses, setExpenses } = useExpenses();
+  const [date, setDate] = useState('2024-01-01');
   const [item, setItem] = useState('');
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
 
+  useEffect(() => {
+    if (selectedMonth) {
+      const monthIndex = selectedMonth.replace('월', '').padStart(2, '0');
+      setDate(`2024-${monthIndex}-01`);
+    }
+  }, [selectedMonth]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (date && item && amount && description) {
-      addExpense({
-        id: uuidv4(),
-        date,
-        item,
-        amount: parseFloat(amount),
-        description,
-      });
-      setDate('');
-      setItem('');
-      setAmount('');
-      setDescription('');
-    }
+    const newExpense = {
+      id: Date.now().toString(),
+      date,
+      item,
+      amount: parseFloat(amount),
+      description,
+    };
+    setExpenses([...expenses, newExpense]);
+    setItem('');
+    setAmount('');
+    setDescription('');
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
-      <Label>
-        날짜
-        <Input 
-          type="date" 
-          value={date} 
-          onChange={(e) => setDate(e.target.value)} 
-          required 
-        />
-      </Label>
-      <Label>
-        항목
-        <Input 
-          type="text" 
-          value={item} 
-          placeholder="지출 항목"
-          onChange={(e) => setItem(e.target.value)} 
-          required 
-        />
-      </Label>
-      <Label>
-        금액
-        <Input 
-          type="number" 
-          value={amount} 
-          placeholder="지출 금액"
-          onChange={(e) => setAmount(e.target.value)} 
-          required 
-        />
-      </Label>
-      <Label>
-        내용
-        <Input 
-          type="text" 
-          value={description} 
-          placeholder="지출 내용"
-          onChange={(e) => setDescription(e.target.value)} 
-          required 
-        />
-      </Label>
-      <Button type="submit">저장</Button>
-    </Form>
+    <Container>
+      <Form onSubmit={handleSubmit}>
+        <InputGroup>
+          <Label>
+            날짜
+            <Input 
+              type="date" 
+              value={date} 
+              onChange={(e) => setDate(e.target.value)} 
+              required 
+            />
+          </Label>
+          <Label>
+            항목
+            <Input 
+              type="text" 
+              value={item}
+              onChange={(e) => setItem(e.target.value)} 
+              placeholder="지출 항목" 
+              required 
+            />
+          </Label>
+          <Label>
+            금액
+            <Input 
+              type="number" 
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)} 
+              placeholder="지출 금액" 
+              required 
+            />
+          </Label>
+          <Label>
+            내용
+            <Input 
+              type="text" 
+              value={description}
+              onChange={(e) => setDescription(e.target.value)} 
+              placeholder="지출 내용" 
+              required 
+            />
+          </Label>
+        </InputGroup>
+        <Button type="submit">저장</Button>
+      </Form>
+      <MonthSelector />
+    </Container>
   );
 };
 

@@ -1,22 +1,21 @@
 import React, { useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { useExpenses } from '../context/ExpenseContext';
 
 const Container = styled.div`
-  width: 800px;
-  margin: 40px auto;
-  padding: 20px;
-  background-color: #ffffff;
-  border-radius: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 800px;
+    margin: 0px auto;
+    padding: 20px;
+    background-color: rgb(255, 255, 255);
+    border-radius: 20px;
 `;
 
 const Input = styled.input`
-  display: block;
-  width: calc(100% - 22px);  // Adjust to fit the container without scroll
+  display: flex;
   margin-bottom: 10px;  
   padding: 10px;
-  border: 1px solid #dddddd;
+  border: 1px solid rgb(221, 221, 221);
   border-radius: 4px;
   font-size: 14px;
 `;
@@ -28,7 +27,6 @@ const Button = styled.button`
   border-radius: 5px;
   cursor: pointer;
   margin-right: 10px;
-  font-size: 14px;
 
   &:disabled {
     background-color: #ccc;
@@ -47,9 +45,10 @@ const NavigateButton = styled(Button)`
   background-color: rgb(108, 117, 125);
 `;
 
-const ExpenseDetail = ({ expenses, setExpenses }) => {
+const ExpenseDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { expenses, setExpenses } = useExpenses();
   const expense = expenses.find(expense => expense.id === id);
 
   const dateRef = useRef();
@@ -83,13 +82,9 @@ const ExpenseDetail = ({ expenses, setExpenses }) => {
 
   return (
     <Container>
-      <label>날짜</label>
       <Input type="date" defaultValue={expense.date} ref={dateRef} />
-      <label>항목</label>
       <Input type="text" defaultValue={expense.item} ref={itemRef} />
-      <label>금액</label>
       <Input type="number" defaultValue={expense.amount} ref={amountRef} />
-      <label>내용</label>
       <Input type="text" defaultValue={expense.description} ref={descriptionRef} />
       <UpdateButton onClick={handleUpdate}>수정</UpdateButton>
       <DeleteButton onClick={handleDelete}>삭제</DeleteButton>
