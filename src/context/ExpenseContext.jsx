@@ -1,17 +1,30 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
+import fakeData from '../fakeData.json';
 
-const ExpenseContext = createContext();
-
-export const useExpenses = () => {
-  return useContext(ExpenseContext);
-};
+export const ExpenseContext = createContext();
 
 export const ExpenseProvider = ({ children }) => {
-  const [expenses, setExpenses] = useState([]);
-  const [selectedMonth, setSelectedMonth] = useState('1월');
+  const [expenses, setExpenses] = useState(fakeData);
+  const [selectedMonth, setSelectedMonth] = useState(() => {
+    const savedMonth = localStorage.getItem('selectedMonth');
+    return savedMonth ? savedMonth : '1월';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('selectedMonth', selectedMonth);
+  }, [selectedMonth]);
+
+  const addExpense = (expense) => {
+    setExpenses([...expenses, expense]);
+  };
+
+  const filteredExpenses = expenses.filter(expense => {
+    const expenseMonth = new Date(expense.date).getMonth() + 1;
+    return expenseMonth === parseInt(selectedMonth);
+  });
 
   return (
-    <ExpenseContext.Provider value={{ expenses, setExpenses, selectedMonth, setSelectedMonth }}>
+    <ExpenseContext.Provider value={{ expenses, setExpenses, selectedMonth, setSelectedMonth, addExpense, filteredExpenses }}>
       {children}
     </ExpenseContext.Provider>
   );
