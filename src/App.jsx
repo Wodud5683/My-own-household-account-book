@@ -1,21 +1,30 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import ExpenseForm from './components/ExpenseForm';
-import ExpenseList from './components/ExpenseList';
-import ExpenseDetail from './pages/ExpenseDetail';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import styled from 'styled-components';
+import GlobalStyles from './GlobalStyles';
 import { ExpenseProvider } from './context/ExpenseContext';
-import GlobalStyle from './GlobalStyles';
+import Home from './pages/Home';
+import ExpenseDetail from './pages/ExpenseDetail';
+
+const AppWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+`;
 
 const App = () => {
   return (
     <ExpenseProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<ExpenseForm />} />
-          <Route path="/expenses" element={<ExpenseList />} />
-          <Route path="/expense/:id" element={<ExpenseDetail />} />
-        </Routes>
-      </Router>
+      <AppWrapper>
+        <GlobalStyles />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/expense/:id" element={<ExpenseDetail />} />
+          </Routes>
+        </BrowserRouter>
+      </AppWrapper>
     </ExpenseProvider>
   );
 };
