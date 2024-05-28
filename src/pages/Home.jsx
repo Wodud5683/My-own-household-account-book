@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import styled from 'styled-components';
 import ExpenseForm from '../components/ExpenseForm';
 import MonthSelector from '../components/MonthSelector';
@@ -8,7 +8,7 @@ import { ExpenseContext } from '../context/ExpenseContext';
 const Container = styled.div`
   width: 800px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 20px;  
   background-color: #E9F7F6;
   border-radius: 10px;
   margin-bottom: 20px;

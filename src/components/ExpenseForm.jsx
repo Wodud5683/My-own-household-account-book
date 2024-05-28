@@ -1,7 +1,7 @@
-import React, { useState, useContext } from 'react';
-import styled from 'styled-components';
-import { ExpenseContext } from '../context/ExpenseContext';
-import { v4 as uuidv4 } from 'uuid';
+import { useState, useContext } from "react";
+import styled from "styled-components";
+import { ExpenseContext } from "../context/ExpenseContext";
+import { v4 as uuidv4 } from "uuid";
 
 const Form = styled.form`
   display: flex;
@@ -22,7 +22,7 @@ const Input = styled.input`
 `;
 
 const Button = styled.button`
-  padding: 10px; 
+  padding: 10px;
   background-color: #007bff;
   color: white;
   border: 1px solid;
@@ -30,7 +30,7 @@ const Button = styled.button`
   width: 150px;
   cursor: pointer;
   font-size: 14px;
-  
+
   &:hover {
     background-color: #0056b3;
   }
@@ -46,10 +46,10 @@ const Label = styled.label`
 
 const ExpenseForm = () => {
   const { addExpense } = useContext(ExpenseContext);
-  const [date, setDate] = useState('');
-  const [item, setItem] = useState('');
-  const [amount, setAmount] = useState('');
-  const [description, setDescription] = useState('');
+  const [date, setDate] = useState("");
+  const [item, setItem] = useState("");
+  const [amount, setAmount] = useState("");
+  const [description, setDescription] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -61,10 +61,10 @@ const ExpenseForm = () => {
         amount: parseFloat(amount),
         description,
       });
-      setDate('');
-      setItem('');
-      setAmount('');
-      setDescription('');
+      setDate("");
+      setItem("");
+      setAmount("");
+      setDescription("");
     }
   };
 
@@ -72,41 +72,41 @@ const ExpenseForm = () => {
     <Form onSubmit={handleSubmit}>
       <Label>
         날짜
-        <Input 
-          type="date" 
-          value={date} 
-          onChange={(e) => setDate(e.target.value)} 
-          required 
+        <Input
+          type="date"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+          required
         />
       </Label>
       <Label>
         항목
-        <Input 
-          type="text" 
-          value={item} 
+        <Input
+          type="text"
+          value={item}
           placeholder="지출 항목"
-          onChange={(e) => setItem(e.target.value)} 
-          required 
+          onChange={(e) => setItem(e.target.value)}
+          required
         />
       </Label>
       <Label>
         금액
-        <Input 
-          type="number" 
-          value={amount} 
+        <Input
+          type="number"
+          value={amount}
           placeholder="지출 금액"
-          onChange={(e) => setAmount(e.target.value)} 
-          required 
+          onChange={(e) => setAmount(e.target.value)}
+          required
         />
       </Label>
       <Label>
         내용
-        <Input 
-          type="text" 
-          value={description} 
+        <Input
+          type="text"
+          value={description}
           placeholder="지출 내용"
-          onChange={(e) => setDescription(e.target.value)} 
-          required 
+          onChange={(e) => setDescription(e.target.value)}
+          required
         />
       </Label>
       <Button type="submit">저장</Button>
