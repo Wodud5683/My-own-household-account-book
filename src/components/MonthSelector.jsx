@@ -1,5 +1,7 @@
-import React, { useEffect } from 'react';
-import styled from 'styled-components';
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import styled from "styled-components";
+import { setSelectedMonth } from "../redux/actions/ExpensesSlice";
 
 const MonthContainer = styled.div`
   display: flex;
@@ -15,26 +17,28 @@ const MonthContainer = styled.div`
 const MonthButton = styled.button`
   width: 110px;
   height: 70px;
-  background-color: ${(props) => (props.active ? '#00a6a6' : '#f8f9fa')};
-  color: ${(props) => (props.active ? 'white' : 'black')};
+  background-color: ${(props) => (props.active ? "#00a6a6" : "#f8f9fa")};
+  color: ${(props) => (props.active ? "white" : "black")};
   border: none;
   border-radius: 10px;
   cursor: pointer;
   font-size: 16px;
 `;
 
-const MonthSelector = ({ selectedMonth, setSelectedMonth }) => {
+const MonthSelector = () => {
+  const dispatch = useDispatch();
+  const selectedMonth = useSelector((state) => state.expenses.selectedMonth);
   const months = Array.from({ length: 12 }, (_, i) => `${i + 1}월`);
 
   useEffect(() => {
-    const savedMonth = localStorage.getItem('selectedMonth');
+    const savedMonth = localStorage.getItem("selectedMonth");
     if (savedMonth) {
-      setSelectedMonth(savedMonth);
+      dispatch(setSelectedMonth(savedMonth));
     }
-  }, [setSelectedMonth]);
+  }, [dispatch]);
 
   useEffect(() => {
-    localStorage.setItem('selectedMonth', selectedMonth);
+    localStorage.setItem("selectedMonth", selectedMonth);
   }, [selectedMonth]);
 
   return (
@@ -43,7 +47,7 @@ const MonthSelector = ({ selectedMonth, setSelectedMonth }) => {
         <MonthButton
           key={index}
           active={selectedMonth === month}
-          onClick={() => setSelectedMonth(month)}
+          onClick={() => dispatch(setSelectedMonth(month))}
         >
           {month}
         </MonthButton>

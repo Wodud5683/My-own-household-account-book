@@ -1,6 +1,7 @@
-import React from "react";
-import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
 
 const ExpenseContainer = styled.div`
   background-color: #ffffff;
@@ -57,23 +58,30 @@ const ExpenseDescription = styled.span`
   color: #555;
 `;
 
-const ExpenseList = ({ expenses }) => {
+const ExpenseList = () => {
+  const expenses = useSelector(state => state.expenses.expenses);
+  const selectedMonth = useSelector(state => state.expenses.selectedMonth);
   const navigate = useNavigate();
 
   const handleExpenseClick = (id) => {
     navigate(`/expense/${id}`);
   };
 
+  const filteredExpenses = expenses.filter(expense => {
+    const expenseMonth = new Date(expense.date).getMonth() + 1;
+    return expenseMonth === parseInt(selectedMonth);
+  });
+
   return (
     <ExpenseContainer>
-      {expenses.map((expense) => (
+      {filteredExpenses.map((expense) => (
         <ExpenseItem key={expense.id} onClick={() => handleExpenseClick(expense.id)}>
           <ExpenseDetails>
             <ExpenseDate>{expense.date}</ExpenseDate>
             <ExpenseTitle>{expense.item}</ExpenseTitle>
             <ExpenseDescription>{expense.description}</ExpenseDescription>
           </ExpenseDetails>
-          <ExpenseAmount>{expense.amount.toLocaleString()} 원</ExpenseAmount>
+          <ExpenseAmount>₩{expense.amount.toLocaleString()}</ExpenseAmount>
         </ExpenseItem>
       ))}
     </ExpenseContainer>

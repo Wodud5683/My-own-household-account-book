@@ -1,6 +1,8 @@
-import React, { useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
+import { useRef } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import styled from "styled-components";
+import { updateExpense, deleteExpense } from "../redux/actions/Expenses";
 
 const Container = styled.div`
   width: 800px;
@@ -13,8 +15,8 @@ const Container = styled.div`
 
 const Input = styled.input`
   display: block;
-  width: calc(100% - 22px);  // Adjust to fit the container without scroll
-  margin-bottom: 10px;  
+  width: calc(100% - 22px);
+  margin-bottom: 10px;
   padding: 10px;
   border: 1px solid #dddddd;
   border-radius: 4px;
@@ -47,10 +49,12 @@ const NavigateButton = styled(Button)`
   background-color: rgb(108, 117, 125);
 `;
 
-const ExpenseDetail = ({ expenses, setExpenses }) => {
+const ExpenseDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const expense = expenses.find(expense => expense.id === id);
+  const dispatch = useDispatch();
+  const expenses = useSelector((state) => state.expenses.expenses);
+  const expense = expenses.find((expense) => expense.id === id);
 
   const dateRef = useRef();
   const itemRef = useRef();
@@ -58,24 +62,22 @@ const ExpenseDetail = ({ expenses, setExpenses }) => {
   const descriptionRef = useRef();
 
   const handleUpdate = () => {
-    const updatedExpenses = expenses.map(exp => 
-      exp.id === id ? {
-        ...exp,
+    dispatch(
+      updateExpense({
+        id,
         date: dateRef.current.value,
         item: itemRef.current.value,
         amount: parseFloat(amountRef.current.value),
-        description: descriptionRef.current.value
-      } : exp
+        description: descriptionRef.current.value,
+      })
     );
-    setExpenses(updatedExpenses);
-    navigate('/');
+    navigate("/");
   };
 
   const handleDelete = () => {
-    if (window.confirm('정말 삭제하시겠습니까?')) {
-      const updatedExpenses = expenses.filter(exp => exp.id !== id);
-      setExpenses(updatedExpenses);
-      navigate('/');
+    if (window.confirm("정말 삭제하시겠습니까?")) {
+      dispatch(deleteExpense(id));
+      navigate("/");
     }
   };
 
@@ -90,10 +92,14 @@ const ExpenseDetail = ({ expenses, setExpenses }) => {
       <label>금액</label>
       <Input type="number" defaultValue={expense.amount} ref={amountRef} />
       <label>내용</label>
-      <Input type="text" defaultValue={expense.description} ref={descriptionRef} />
+      <Input
+        type="text"
+        defaultValue={expense.description}
+        ref={descriptionRef}
+      />
       <UpdateButton onClick={handleUpdate}>수정</UpdateButton>
       <DeleteButton onClick={handleDelete}>삭제</DeleteButton>
-      <NavigateButton onClick={() => navigate('/')}>뒤로가기</NavigateButton>
+      <NavigateButton onClick={() => navigate("/")}>뒤로가기</NavigateButton>
     </Container>
   );
 };

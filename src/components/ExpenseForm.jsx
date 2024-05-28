@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { v4 as uuidv4 } from 'uuid';
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import styled from "styled-components";
+import { v4 as uuidv4 } from "uuid";
+import { addExpense } from "../redux/actions/ExpensesSlice";
 
 const Form = styled.form`
   display: flex;
@@ -21,7 +23,7 @@ const Input = styled.input`
 `;
 
 const Button = styled.button`
-  padding: 10px; 
+  padding: 10px;
   background-color: #007bff;
   color: white;
   border: 1px solid;
@@ -29,40 +31,43 @@ const Button = styled.button`
   width: 150px;
   cursor: pointer;
   font-size: 14px;
-  
+
   &:hover {
     background-color: #0056b3;
   }
 `;
 
 const Label = styled.label`
-    margin-bottom: 5px;
-    font-size: 14px;
-    color: rgb(51, 51, 51);
-    text-align: left;
-    height: 15px;
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: rgb(51, 51, 51);
+  text-align: left;
+  height: 15px;
 `;
 
-const ExpenseForm = ({ addExpense }) => {
-  const [date, setDate] = useState('');
-  const [item, setItem] = useState('');
-  const [amount, setAmount] = useState('');
-  const [description, setDescription] = useState('');
+const ExpenseForm = () => {
+  const [date, setDate] = useState("");
+  const [item, setItem] = useState("");
+  const [amount, setAmount] = useState("");
+  const [description, setDescription] = useState("");
+  const dispatch = useDispatch();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (date && item && amount && description) {
-      addExpense({
-        id: uuidv4(),
-        date,
-        item,
-        amount: parseFloat(amount),
-        description,
-      });
-      setDate('');
-      setItem('');
-      setAmount('');
-      setDescription('');
+      dispatch(
+        addExpense({
+          id: uuidv4(),
+          date,
+          item,
+          amount: parseFloat(amount),
+          description,
+        })
+      );
+      setDate("");
+      setItem("");
+      setAmount("");
+      setDescription("");
     }
   };
 
@@ -70,41 +75,41 @@ const ExpenseForm = ({ addExpense }) => {
     <Form onSubmit={handleSubmit}>
       <Label>
         날짜
-        <Input 
-          type="date" 
-          value={date} 
-          onChange={(e) => setDate(e.target.value)} 
-          required 
+        <Input
+          type="date"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+          required
         />
       </Label>
       <Label>
         항목
-        <Input 
-          type="text" 
-          value={item} 
+        <Input
+          type="text"
+          value={item}
           placeholder="지출 항목"
-          onChange={(e) => setItem(e.target.value)} 
-          required 
+          onChange={(e) => setItem(e.target.value)}
+          required
         />
       </Label>
       <Label>
         금액
-        <Input 
-          type="number" 
-          value={amount} 
+        <Input
+          type="number"
+          value={amount}
           placeholder="지출 금액"
-          onChange={(e) => setAmount(e.target.value)} 
-          required 
+          onChange={(e) => setAmount(e.target.value)}
+          required
         />
       </Label>
       <Label>
         내용
-        <Input 
-          type="text" 
-          value={description} 
+        <Input
+          type="text"
+          value={description}
           placeholder="지출 내용"
-          onChange={(e) => setDescription(e.target.value)} 
-          required 
+          onChange={(e) => setDescription(e.target.value)}
+          required
         />
       </Label>
       <Button type="submit">저장</Button>
