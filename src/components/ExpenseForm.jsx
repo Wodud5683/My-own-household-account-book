@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
-import { v4 as uuidv4 } from "uuid";
-import { addExpense } from "../redux/actions/ExpensesSlice";
+import { addExpense } from "../redux/slices/ExpensesSlice";
 
 const Form = styled.form`
   display: flex;
@@ -46,18 +45,17 @@ const Label = styled.label`
 `;
 
 const ExpenseForm = () => {
+  const dispatch = useDispatch();
   const [date, setDate] = useState("");
   const [item, setItem] = useState("");
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
-  const dispatch = useDispatch();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (date && item && amount && description) {
       dispatch(
         addExpense({
-          id: uuidv4(),
           date,
           item,
           amount: parseFloat(amount),

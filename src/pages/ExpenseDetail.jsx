@@ -1,8 +1,8 @@
-import { useRef } from "react";
+import React, { useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
-import { updateExpense, deleteExpense } from "../redux/actions/Expenses";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteExpense, updateExpense } from "../redux/slices/ExpensesSlice";
 
 const Container = styled.div`
   width: 800px;
@@ -62,15 +62,14 @@ const ExpenseDetail = () => {
   const descriptionRef = useRef();
 
   const handleUpdate = () => {
-    dispatch(
-      updateExpense({
-        id,
-        date: dateRef.current.value,
-        item: itemRef.current.value,
-        amount: parseFloat(amountRef.current.value),
-        description: descriptionRef.current.value,
-      })
-    );
+    const updatedExpense = {
+      id,
+      date: dateRef.current.value,
+      item: itemRef.current.value,
+      amount: parseFloat(amountRef.current.value),
+      description: descriptionRef.current.value,
+    };
+    dispatch(updateExpense(updatedExpense));
     navigate("/");
   };
 

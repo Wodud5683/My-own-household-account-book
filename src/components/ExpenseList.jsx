@@ -1,7 +1,7 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const ExpenseContainer = styled.div`
   background-color: #ffffff;
@@ -10,7 +10,7 @@ const ExpenseContainer = styled.div`
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease-in-out;
   width: 758px;
-  margin: 20px auto; 
+  margin: 20px auto;
 `;
 
 const ExpenseItem = styled.div`
@@ -59,29 +59,32 @@ const ExpenseDescription = styled.span`
 `;
 
 const ExpenseList = () => {
-  const expenses = useSelector(state => state.expenses.expenses);
-  const selectedMonth = useSelector(state => state.expenses.selectedMonth);
+  const expenses = useSelector((state) => state.expenses.expenses);
+  const selectedMonth = useSelector((state) => state.expenses.selectedMonth);
   const navigate = useNavigate();
+
+  const filteredExpenses = expenses.filter((expense) => {
+    const expenseMonth = new Date(expense.date).getMonth() + 1;
+    return expenseMonth === parseInt(selectedMonth);
+  });
 
   const handleExpenseClick = (id) => {
     navigate(`/expense/${id}`);
   };
 
-  const filteredExpenses = expenses.filter(expense => {
-    const expenseMonth = new Date(expense.date).getMonth() + 1;
-    return expenseMonth === parseInt(selectedMonth);
-  });
-
   return (
     <ExpenseContainer>
       {filteredExpenses.map((expense) => (
-        <ExpenseItem key={expense.id} onClick={() => handleExpenseClick(expense.id)}>
+        <ExpenseItem
+          key={expense.id}
+          onClick={() => handleExpenseClick(expense.id)}
+        >
           <ExpenseDetails>
             <ExpenseDate>{expense.date}</ExpenseDate>
             <ExpenseTitle>{expense.item}</ExpenseTitle>
             <ExpenseDescription>{expense.description}</ExpenseDescription>
           </ExpenseDetails>
-          <ExpenseAmount>₩{expense.amount.toLocaleString()}</ExpenseAmount>
+          <ExpenseAmount>{expense.amount.toLocaleString()} 원</ExpenseAmount>
         </ExpenseItem>
       ))}
     </ExpenseContainer>

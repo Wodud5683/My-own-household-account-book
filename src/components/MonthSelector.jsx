@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React from "react";
 import styled from "styled-components";
-import { setSelectedMonth } from "../redux/actions/ExpensesSlice";
+import { useDispatch } from "react-redux";
+import { setSelectedMonth } from "../redux/slices/ExpensesSlice";
 
 const MonthContainer = styled.div`
   display: flex;
@@ -25,21 +25,9 @@ const MonthButton = styled.button`
   font-size: 16px;
 `;
 
-const MonthSelector = () => {
+const MonthSelector = ({ selectedMonth }) => {
   const dispatch = useDispatch();
-  const selectedMonth = useSelector((state) => state.expenses.selectedMonth);
   const months = Array.from({ length: 12 }, (_, i) => `${i + 1}월`);
-
-  useEffect(() => {
-    const savedMonth = localStorage.getItem("selectedMonth");
-    if (savedMonth) {
-      dispatch(setSelectedMonth(savedMonth));
-    }
-  }, [dispatch]);
-
-  useEffect(() => {
-    localStorage.setItem("selectedMonth", selectedMonth);
-  }, [selectedMonth]);
 
   return (
     <MonthContainer>
