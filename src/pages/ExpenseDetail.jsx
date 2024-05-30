@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -52,17 +52,19 @@ const ExpenseDetail = ({ expenses, setExpenses }) => {
   const navigate = useNavigate();
   const expense = expenses.find(expense => expense.id === id);
 
-  const [date, setDate] = useState("");
-  const [item, setItem] = useState("");
+  const dateRef = useRef();
+  const itemRef = useRef();
+  const amountRef = useRef();
+  const descriptionRef = useRef();
+
   const [amount, setAmount] = useState("");
-  const [description, setDescription] = useState("");
 
   useEffect(() => {
     if (expense) {
-      setDate(expense.date);
-      setItem(expense.item);
+      dateRef.current.value = expense.date;
+      itemRef.current.value = expense.item;
       setAmount(expense.amount.toString());
-      setDescription(expense.description);
+      descriptionRef.current.value = expense.description;
     }
   }, [expense]);
 
@@ -70,10 +72,10 @@ const ExpenseDetail = ({ expenses, setExpenses }) => {
     const updatedExpenses = expenses.map(exp => 
       exp.id === id ? {
         ...exp,
-        date,
-        item,
+        date: dateRef.current.value,
+        item: itemRef.current.value,
         amount: parseFloat(amount),
-        description
+        description: descriptionRef.current.value
       } : exp
     );
     setExpenses(updatedExpenses);
@@ -93,9 +95,9 @@ const ExpenseDetail = ({ expenses, setExpenses }) => {
   return (
     <Container>
       <label>날짜</label>
-      <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+      <Input type="date" ref={dateRef} />
       <label>항목</label>
-      <Input type="text" value={item} onChange={(e) => setItem(e.target.value)} />
+      <Input type="text" ref={itemRef} />
       <label>금액</label>
       <Input 
         type="text" 
@@ -106,7 +108,7 @@ const ExpenseDetail = ({ expenses, setExpenses }) => {
         }} 
       />
       <label>내용</label>
-      <Input type="text" value={description} onChange={(e) => setDescription(e.target.value)} />
+      <Input type="text" ref={descriptionRef} />
       <UpdateButton onClick={handleUpdate}>수정</UpdateButton>
       <DeleteButton onClick={handleDelete}>삭제</DeleteButton>
       <NavigateButton onClick={() => navigate('/')}>뒤로가기</NavigateButton>
