@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
@@ -56,18 +56,27 @@ const ExpenseDetail = () => {
   const expenses = useSelector((state) => state.expenses.expenses);
   const expense = expenses.find((expense) => expense.id === id);
 
-  const dateRef = useRef();
-  const itemRef = useRef();
-  const amountRef = useRef();
-  const descriptionRef = useRef();
+  const [date, setDate] = useState("");
+  const [item, setItem] = useState("");
+  const [amount, setAmount] = useState("");
+  const [description, setDescription] = useState("");
+
+  useEffect(() => {
+    if (expense) {
+      setDate(expense.date);
+      setItem(expense.item);
+      setAmount(expense.amount.toString());
+      setDescription(expense.description);
+    }
+  }, [expense]);
 
   const handleUpdate = () => {
     const updatedExpense = {
       id,
-      date: dateRef.current.value,
-      item: itemRef.current.value,
-      amount: parseFloat(amountRef.current.value),
-      description: descriptionRef.current.value,
+      date,
+      item,
+      amount: parseFloat(amount),
+      description,
     };
     dispatch(updateExpense(updatedExpense));
     navigate("/");
@@ -85,16 +94,31 @@ const ExpenseDetail = () => {
   return (
     <Container>
       <label>날짜</label>
-      <Input type="date" defaultValue={expense.date} ref={dateRef} />
+      <Input
+        type="date"
+        value={date}
+        onChange={(e) => setDate(e.target.value)}
+      />
       <label>항목</label>
-      <Input type="text" defaultValue={expense.item} ref={itemRef} />
+      <Input
+        type="text"
+        value={item}
+        onChange={(e) => setItem(e.target.value)}
+      />
       <label>금액</label>
-      <Input type="number" defaultValue={expense.amount} ref={amountRef} />
+      <Input
+        type="text"
+        value={amount}
+        onChange={(e) => {
+          const value = e.target.value.replace(/[^0-9]/g, "");
+          setAmount(value);
+        }}
+      />
       <label>내용</label>
       <Input
         type="text"
-        defaultValue={expense.description}
-        ref={descriptionRef}
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
       />
       <UpdateButton onClick={handleUpdate}>수정</UpdateButton>
       <DeleteButton onClick={handleDelete}>삭제</DeleteButton>
